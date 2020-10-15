@@ -1,0 +1,121 @@
+﻿@page "/"
+@using ObaidiP3.Shared
+@layout MainLayout
+
+    <!--Calculator Parameters -->
+
+    <h1>Investment Calc</h1>
+    <div class="table">
+
+        <label for="principle"> Principle: &#x24;</label><br>
+        <input type="number" @bind="@inv.Principle" /><br>
+        <p><em class="text-danger">@pError</em></p>
+
+        <label for="intrest"> Intrest: &#37; </label> <br>
+        <input type="number" @bind="inv.Intrest" /><br>
+        <p><em class="text-danger">@iError</em></p>
+
+        <label for="years"> Years: </label> <br>
+        <input type="number" @bind="@inv.Years" /><br>
+        <p><em class="text-danger">@yError</em></p>
+
+        <label for="cmpPerYr"> Compounds per Year: </label> <br>
+        <input type="number" @bind="@inv.CmpPerYr" /><br>
+        <p><em class="text-danger">@cError</em></p>
+        <br>
+        <button type="submit"
+                @onclick="@(()=>CalcIndex())">
+            Calculate
+        </button>
+        <br />
+    </div>
+    
+
+    <!--Result -->
+    <h1 style="padding-top:10px">Result</h1>
+    <div class="table">
+        <p>
+            Principle:<br>
+            @principleS
+        </p>
+        <p>
+            Years:<br>
+            @years
+        </p>
+        <p>
+            Interest:<br>
+            @intrestS
+        </p>
+        <p>
+            CmpPerYr:<br>
+            @cmpPerYr
+        </p>
+        <p>
+            FutureValue:<br>
+            @futureValueS
+        </p>
+        <br>
+        <button class="btn btn-success" type="reset"
+                @onclick="@(() => NewCalc())">
+            Calculate a new investment
+        </button>
+        <br />
+    </div>
+
+    @code
+{
+        private InvestmentCalc inv = new InvestmentCalc();
+        private string futureValueS = "0", principleS = "0", intrestS = "0", pError , iError , cError , yError;
+        private int years, cmpPerYr;
+
+        private void CalcIndex()
+        {
+            bool hasError = false;
+            if (inv.Principle < 0 || inv.Principle > Double.MaxValue)
+
+            { pError = "Principle must be between 0 and Max Value = 1.7976931348623157E+308"; hasError = true; }
+
+            if (inv.Years <= 0 || inv.Years > 30)
+
+            { yError = "Years must be between 1 and 30"; hasError = true; }
+
+            if (inv.Intrest < 0 || inv.Intrest > 100)
+
+            { iError = "Intrest must be between 0 and 100"; hasError = true; }
+
+            if (inv.CmpPerYr < 1 || inv.CmpPerYr > 24)
+
+            { cError = "CmpPerYr must be between 1 and 24"; hasError = true; }
+            if(!hasError)
+            {
+                futureValueS = inv.FutureValue.ToString("C2");
+                principleS = inv.Principle.ToString("C2");
+                intrestS = (inv.Intrest).ToString() + "%";
+                years = inv.Years;
+                cmpPerYr = inv.CmpPerYr;
+                iError = "";
+                yError = "";
+                cError = "";
+                pError = "";
+            }
+
+        }
+
+        private void NewCalc()         // clear all fields and set to the default value
+        {
+            inv.FutureValue = default;
+            inv.Principle = default;
+            inv.Intrest = default;
+            inv.CmpPerYr = default;
+            inv.Years = default;
+            futureValueS = default;
+            principleS = default;
+            intrestS = default;
+            years = default;
+            cmpPerYr = default;
+            futureValueS = "0";
+            principleS = "0";
+            intrestS = "0";
+        }
+    }
+
